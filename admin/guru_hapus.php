@@ -32,7 +32,7 @@ try {
         
         echo "<script>
                 alert('Data guru berhasil dihapus!');
-                window.location.href = 'indeX.php?page=lihatguru';
+                window.location.href = 'index.php?page=lihatguru';
               </script>";
     }
     
@@ -42,7 +42,7 @@ try {
     
     echo "<script>
             alert('Gagal menghapus data: " . $e->getMessage() . "');
-            window.location.href = 'indeX.php?page=lihatguru';
+            window.location.href = 'index.php?page=lihatguru';
           </script>";
 }
 

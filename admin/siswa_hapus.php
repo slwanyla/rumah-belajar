@@ -11,5 +11,5 @@ mysqli_query($conn, "delete from tb_siswa where id_siswa = '$kode'") or die(mysq
 ?>
 <script type="text/javascript">
     alert("Data berhasil dihapus")
-    window.location = "inde.php?page=lihatsiswa";
+    window.location = "index.php?page=lihatsiswa";
 </script>
