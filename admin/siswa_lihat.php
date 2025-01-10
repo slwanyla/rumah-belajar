@@ -2,7 +2,7 @@
     <!-- Content -->
 
     <div class="container-xxl flex-grow-1 container-p-y">
-        <h4 class="py-3 mb-4"><span class="text-muted fw-light">Edit Data </span> Siswa</h4>
+        <h4 class="py-3 mb-4"><span class="text-muted fw-light"> Data </span> Siswa</h4>
         <?php
         include ("koneksi.php");
 
@@ -53,7 +53,6 @@
                                 <td>' . htmlspecialchars($row['status'] ?? '') . '</td>
                                 <td>' . htmlspecialchars($row['sisa_pertemuan'] ?? '') . '</td>
                                 <td>
-                                    <a href="?page=editsiswa&id=' . ($row['id_siswa'] ?? '') . '" class="btn btn-warning btn-sm mb-1">Edit</a>
                                     <a onclick="return confirm(\'Yakin akan hapus data ini?\')" href="siswa_hapus.php?id=' . ($row['id_siswa'] ?? '') . '" class="btn btn-danger btn-sm">Hapus</a>
                                 </td>
                             </tr>';
