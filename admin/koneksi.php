@@ -1,13 +1,13 @@
 <?php
-$host = "localhost";
-$user = "root";
-$pass = "";
-$db = "rumahbelajar";
-
 // $host = "localhost";
-// $user = "rohanah";
-// $pass = "Buana0000!";
+// $user = "root";
+// $pass = "";
 // $db = "rumahbelajar";
+
+$host = "localhost";
+$user = "rohanah";
+$pass = "Buana0000!";
+$db = "rumahbelajar";
 
 $conn = mysqli_connect($host, $user, $pass, $db);
 

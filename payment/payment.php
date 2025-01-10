@@ -178,7 +178,7 @@ require "./../admin/koneksi.php";
                                 <button name="payment" type=" submit" class="btn btn-primary w-100">Submit</button>
                             </form>
                             <div class="text-center mt-3">
-                                <p>Sudah melakukan pembayaran? <b><a href="login.php" class="btn btn-success">Login</a></b></p>
+                                <p>Sudah melakukan pembayaran? <b><a href="./../login.php" class="btn btn-success">Login</a></b></p>
                             </div>
                         </div>
                     </div>
