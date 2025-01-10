@@ -1,0 +1,141 @@
+body {
+    background-color: rgb(255, 255, 255);
+    width: 100%;
+    overflow-x: hidden;
+    
+}
+.navbar {
+    background-color: #73A9AD !important;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    z-index: 1000;
+    
+}
+a {
+    color: azure !important;
+}
+h5 {
+    color: rgb(255, 255, 255);
+}
+h1{
+    color: #ffffffb2 ;
+}
+h2 {
+    color:#659287;
+}
+.hero-section {
+    position: relative;
+    width: 100%;
+    height: 50vh; /* Atur tinggi sesuai kebutuhan */
+    background-image: url('./img/st.jpeg');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    z-index: 1;
+    overflow: hidden;
+    display: inline-block;
+    
+}
+
+.hero-section::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%; 
+    background-color:rgba(45, 118, 136, 0.74); /* Warna biru transparan */
+    z-index: 2;
+}  
+.hero-content {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    text-align: center;
+    color: #ffffffb2 ; /* Teks putih agar kontras dengan latar belakang */
+    z-index: 3;
+    display: inline-block;
+}
+.btn {
+    border: none;
+    color: #fff;
+    padding: 10px 20px;
+    text-decoration: none;
+    border-radius: 5px;
+}
+.btn:hover {
+    background-color: #1cc88a;
+}
+.icon-img{
+    width: 100px;
+    height: auto; 
+    display: block; 
+    margin: 0 auto;
+}
+.about-container {
+    background-color: white; /* Warna putih */
+    border-radius: 15px; /* Membuat sudut melengkung */
+    padding: 20px 60px; /* Jarak di dalam kotak */
+    margin: 0 auto; /* Memposisikan kotak di tengah */
+    max-width: 900px; /* Lebar maksimum */
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1); /* Efek bayangan */
+    position: relative;
+    top: 50px;
+    z-index: 3;
+}
+.programs-container {
+    background-color: #F5F0BB; /* Warna coklat */
+    padding: 70px 20px;
+    text-align: center;
+    position: relative; 
+}
+.price-card .card{
+    background-color: rgb(255, 255, 255);
+}
+.card {
+    background-color:rgb(196, 223, 170);
+}
+.d-flex{
+    display: flex;
+    align-items: center;
+}
+
+/*LOGIN*/
+ol,ul,dl
+{
+	/* IE7: reset rtl list margin. (#7334) */
+	margin-right: 0px;
+	/* Preserved spaces for list items with text direction different than the list. (#6249,#8049)*/
+	padding: 0 40px;
+}
+#app nav ul {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+}
+#app nav ul li {
+    float: left;
+}
+#app nav ul li a {
+    display: inline-block;
+    padding: 10px;
+    color: rgb(234, 238, 238);
+    background-color: chartreuse;
+    text-decoration: none;
+    margin-right: 5px;
+}
+#app nav ul li a:hover {
+    background-color: blueviolet;
+}
+
+footer {
+    position: relative;
+    background-color:  #73A9AD;
+    /* Warna latar belakang footer */
+    padding: 20px 0;
+    /* Tambahkan padding untuk footer */
+}
