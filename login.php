@@ -1,14 +1,25 @@
 <?php
+// Set session lifetime jadi 1 jam
+session_set_cookie_params(3600);
 session_start();
-include "admin/koneksi.php"; 
+require "./admin/koneksi.php";
+
+
+// Ensure notification message exists
+$notificationMessage = '';
+if (isset($_SESSION['payment_success']) || isset($_SESSION['payment_notification'])) {
+    $notificationMessage = isset($_SESSION['payment_notification']) 
+        ? $_SESSION['payment_notification'] 
+        : "Pembayaran berhasil! Silakan tunggu konfirmasi dari admin.";
+}
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $username = $_POST['username'];
+    $username_or_email = $_POST['username_or_email'];
     $password = $_POST['pass'];
 
     // Cek keberadaan username atau email
-    $stmt = $conn->prepare("SELECT * FROM tb_pengguna WHERE username = ?");
-    $stmt->bind_param("s", $username);
+    $stmt = $conn->prepare("SELECT * FROM tb_pengguna WHERE username = ? OR email = ?");
+    $stmt->bind_param("ss", $username_or_email, $username_or_email);
     $stmt->execute();
     $result = $stmt->get_result();
     $user = $result->fetch_assoc();
@@ -46,21 +57,58 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $result_pendaftaran = $stmt_pendaftaran->get_result();
             $pendaftaran = $result_pendaftaran->fetch_assoc();
 
-            $stmt_siswa = $conn->prepare("SELECT ts.id_siswa, ts.nama_siswa, ts.status 
-                        FROM tb_siswa ts
-                        INNER JOIN tbl_pendaftaran tp ON ts.id_pendaftaran = tp.id_pendaftaran
-                        WHERE tp.id_pengguna = ? AND ts.status = 'aktif'");
+            $stmt_siswa = $conn->prepare("SELECT ts.id_siswa, ts.nama_siswa, ts.status, ts.exp_date
+                FROM tb_siswa ts
+                INNER JOIN tbl_pendaftaran tp ON ts.id_pendaftaran = tp.id_pendaftaran
+                WHERE tp.id_pengguna = ?");
             $stmt_siswa->bind_param("i", $user['id_pengguna']);
             $stmt_siswa->execute();
             $result_siswa = $stmt_siswa->get_result();
-            $siswa = $result_siswa->fetch_assoc();
 
-            
-            if ($siswa) {
-              // Set session siswa
-              $_SESSION['id_siswa'] = $siswa['id_siswa'];
-              $_SESSION['nama_siswa'] = $siswa['nama_siswa'];
+            // Check if student has any active courses
+            $has_active_course = false;
+            $active_student_id = null;
+            $active_student_name = null;
+            $expired_courses = false;
+
+            while ($siswa = $result_siswa->fetch_assoc()) {
+                // Check expiration date
+                if ($siswa['exp_date'] !== NULL) {
+                    $exp_date = new DateTime($siswa['exp_date']);
+                    $today = new DateTime('today');
+                    
+                    if ($exp_date < $today && $siswa['status'] === 'aktif') {
+                        // Update status to non-aktif if expired
+                        $update_query = "UPDATE tb_siswa SET status = 'non aktif' WHERE id_siswa = ?";
+                        $stmt = $conn->prepare($update_query);
+                        $stmt->bind_param("i", $siswa['id_siswa']);
+                        $stmt->execute();
+                        $expired_courses = true;
+                        continue;
+                    }
+                }
+                
+                if ($siswa['status'] === 'aktif') {
+                    $has_active_course = true;
+                    $active_student_id = $siswa['id_siswa'];
+                    $active_student_name = $siswa['nama_siswa'];
+                    break; // Found at least one active course
+                }
             }
+
+            if (!$has_active_course) {
+                if ($expired_courses) {
+                    $_SESSION['error'] = "Semua kursus Anda telah non-aktif karena masa berlaku telah habis. Silakan registrasi ulang.";
+                } else {
+                    $_SESSION['error'] = "Masa kursus anda sudah tidak berlaku.";
+                }
+                header("location: login.php");
+                exit;
+            }
+
+            // Set session for active student
+            $_SESSION['id_siswa'] = $active_student_id;
+            $_SESSION['nama_siswa'] = $active_student_name;
 
             if ($pendaftaran) {
                 // Ambil status pembayaran dari tb_payment
@@ -101,6 +149,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Login</title>
+
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
   <!-- Bootstrap -->
   <link rel="icon" type="image/png" href="img/logo1.png">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootswatch@4.5.2/dist/cyborg/bootstrap.min.css"
@@ -199,6 +249,28 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 </head>
 
 <body>
+    <!--- Check for payment notification -->
+    <?php if ($notificationMessage): ?>
+        <script>
+            document.addEventListener('DOMContentLoaded', function() {
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Pembayaran Berhasil!',
+                    html: <?php echo json_encode($notificationMessage); ?>,
+                    confirmButtonText: 'Mengerti',
+                    allowOutsideClick: false
+                }).then(function() {
+                    console.log('Notification closed');
+                });
+            });
+        </script>
+        <?php
+        // Hapus notifikasi setelah bersiap untuk menampilkannya
+        unset($_SESSION['payment_notification']);
+        unset($_SESSION['payment_success']);
+        ?>
+    <?php endif; ?>
+
 
   <nav class="navbar navbar-expand-lg navbar-dark w-100">
     <a class="navbar-brand" href="#"><i class="fa-solid fa-book"></i> Rumah Belajar</a>
@@ -244,8 +316,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         <div class="card-body">
           <form action="login.php" method="POST">
             <div class="form-group">
-              <label for="username">Username</label>
-              <input type="text" name="username" class="form-control" required  autocomplete="off">
+              <label for="username">Username/Email</label>
+              <input type="text" name="username_or_email" class="form-control" required  autocomplete="off">
             </div>
             <div class="form-group">
               <label for="password">Password</label>
