@@ -172,7 +172,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['register'])) {
       $_SESSION['id_kelas'] = $id_kelas;
 
       $_SESSION['success'] = "Pendaftaran berhasil! Silakan lakukan pembayaran.";
-      header("location: ../rumah belajar/payment/payment.php");
+      header("location: ../payment/payment.php");
       exit;
   } catch (Exception $e) {
       error_log($e->getMessage());
