@@ -78,19 +78,7 @@ class Course {
         return $stmt->insert_id;
     }
 
-    public function hasActiveEnrollment($id_pendaftaran) {
-      $stmt = $this->conn->prepare("
-          SELECT s.id_siswa 
-          FROM tb_siswa s
-          JOIN tbl_pendaftaran p ON s.id_pendaftaran = p.id_pendaftaran
-          WHERE p.id_pendaftaran = ? 
-            AND s.status = 'aktif'
-      ");
-      $stmt->bind_param("i", $id_pendaftaran);
-      $stmt->execute();
-      $result = $stmt->get_result();
-      return $result->num_rows > 0;
-    }
+    
   
 
 }
@@ -184,7 +172,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['register'])) {
       $_SESSION['id_kelas'] = $id_kelas;
 
       $_SESSION['success'] = "Pendaftaran berhasil! Silakan lakukan pembayaran.";
-      header("location: payment/payment.php");
+      header("location: ../rumah belajar/payment/payment.php");
       exit;
   } catch (Exception $e) {
       error_log($e->getMessage());
@@ -461,7 +449,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['register'])) {
 
 
           function updatePertemuan(kursus) {
-              console.log("Kursus yang dipilih: ", kursus); // Debugging
+              console.log("Kursus yang dipilih: ", kursus); 
               var pertemuanOptions = [];
               var pertemuanOptionsDiv;
 
